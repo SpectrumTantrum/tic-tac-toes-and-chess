@@ -75,11 +75,43 @@ def get_player_move(board, player):
                 return row, col
             else:
                 print("Invalid move! That position is either taken or out of bounds.")
-        except (ValueError, IndexError):
+        except ValueError:
             print("Invalid input! Please enter row and column as two numbers separated by space (e.g., 0 1).")
         except KeyboardInterrupt:
             print("\n\nGame interrupted by user.")
             sys.exit(0)
+
+
+def play_single_game():
+    """Play a single game of tic-tac-toe and return True if player wants to play again."""
+    board = create_board()
+    current_player = 'X'
+    
+    while True:
+        display_board(board)
+        
+        # Get player move
+        row, col = get_player_move(board, current_player)
+        make_move(board, row, col, current_player)
+        
+        # Check for winner
+        if check_winner(board, current_player):
+            display_board(board)
+            print(f"🎉 Congratulations! Player {current_player} wins! 🎉")
+            break
+        
+        # Check for draw
+        if is_board_full(board):
+            display_board(board)
+            print("It's a draw! The board is full.")
+            break
+        
+        # Switch player
+        current_player = 'O' if current_player == 'X' else 'X'
+    
+    # Ask to play again
+    play_again = input("\nWould you like to play again? (yes/no): ").strip().lower()
+    return play_again in ['yes', 'y']
 
 
 def play_game():
@@ -93,34 +125,7 @@ def play_game():
     print("- First to get 3 in a row wins!\n")
     
     while True:
-        board = create_board()
-        current_player = 'X'
-        
-        while True:
-            display_board(board)
-            
-            # Get player move
-            row, col = get_player_move(board, current_player)
-            make_move(board, row, col, current_player)
-            
-            # Check for winner
-            if check_winner(board, current_player):
-                display_board(board)
-                print(f"🎉 Congratulations! Player {current_player} wins! 🎉")
-                break
-            
-            # Check for draw
-            if is_board_full(board):
-                display_board(board)
-                print("It's a draw! The board is full.")
-                break
-            
-            # Switch player
-            current_player = 'O' if current_player == 'X' else 'X'
-        
-        # Ask to play again
-        play_again = input("\nWould you like to play again? (yes/no): ").strip().lower()
-        if play_again not in ['yes', 'y']:
+        if not play_single_game():
             print("\nThanks for playing! Goodbye!")
             break
 
